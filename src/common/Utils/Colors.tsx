@@ -10,4 +10,5 @@ export const COLORS = {
     GREY_SLIDER: "rgba(255, 255, 255, 0.3)",
     GREY_SHADE: "#E5E5E5",
     GRAY_SHADE1: "#9E9E9E",
+    GRAY_SHADE2: "#F8F9FA",
 }

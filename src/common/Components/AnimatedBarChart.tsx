@@ -33,7 +33,7 @@ const AnimatedBarChart: React.FC<AnimatedBarChartProps> = ({
   data,
   maxValue,
   barColor = COLORS.THEME,
-  backgroundColor = '#F8F9FA',
+  backgroundColor = COLORS.GRAY_SHADE2,
   showValues = true,
   height: chartHeight = 200,
 }) => {
@@ -71,7 +71,32 @@ const AnimatedBarChart: React.FC<AnimatedBarChartProps> = ({
   }, [data, maxValue]);
 
   const renderBar = (item: DataPoint, index: number) => {
-    const barWidth = (screenWidth - RFValue(64)) / data.length - RFValue(8);
+    // Calculate bar width with better spacing based on data length
+    const availableWidth = screenWidth - RFValue(80);
+    let barSpacing, barWidth;
+    
+    if (data.length <= 4) {
+      // For month view (4 weeks) - more spacing
+      barSpacing = RFValue(20);
+    } else if (data.length <= 7) {
+      // For week view (7 days) - medium spacing
+      barSpacing = RFValue(15);
+    } else if (data.length <= 12) {
+      // For year view (12 months) - better spacing for readability
+      barSpacing = RFValue(12);
+    } else {
+      // For any other case - minimum spacing
+      barSpacing = RFValue(8);
+    }
+    
+    const totalSpacing = barSpacing * (data.length - 1);
+    barWidth = (availableWidth - totalSpacing) / data.length;
+    
+    // Ensure minimum bar width for visibility
+    const minBarWidth = RFValue(16);
+    if (barWidth < minBarWidth) {
+      barWidth = minBarWidth;
+    }
     
     return (
       <View key={index} style={styles.barContainer}>
@@ -103,19 +128,36 @@ const AnimatedBarChart: React.FC<AnimatedBarChartProps> = ({
         </View>
         
         {showValues && (
-          <Text style={styles.valueText}>
+          <Text style={[
+            styles.valueText, 
+            data.length > 7 && styles.compactValueText,
+            data.length > 10 && styles.veryCompactValueText
+          ]}>
             ${item.value.toLocaleString()}
           </Text>
         )}
         
-        <Text style={styles.labelText}>{item.label}</Text>
+        <Text style={[
+          styles.labelText, 
+          data.length > 7 && styles.compactLabelText,
+          data.length > 10 && styles.veryCompactLabelText
+        ]}>
+          {item.label}
+        </Text>
       </View>
     );
   };
 
   return (
     <View style={[styles.container, { height: chartHeight + RFValue(80) }]}>
-      <View style={styles.chartContainer}>
+      <View style={[
+        styles.chartContainer, 
+        { 
+          width: '100%',
+          justifyContent: 'space-between',
+          paddingHorizontal: data.length > 7 ? RFValue(10) : RFValue(20)
+        }
+      ]}>
         {data.map((item, index) => renderBar(item, index))}
       </View>
     </View>
@@ -125,12 +167,12 @@ const AnimatedBarChart: React.FC<AnimatedBarChartProps> = ({
 const styles = StyleSheet.create({
   container: {
     width: '100%',
+    alignItems: 'center',
   },
   chartContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
+    justifyContent: 'space-between',
     alignItems: 'flex-end',
-    paddingHorizontal: RFValue(16),
     paddingBottom: RFValue(20),
   },
   barContainer: {
@@ -162,6 +204,34 @@ const styles = StyleSheet.create({
     fontFamily: FONTS.Regular,
     color: COLORS.GRAY_SHADE1,
     marginTop: RFValue(4),
+    textAlign: 'center',
+  },
+  compactValueText: {
+    fontSize: RFValue(10, height),
+    fontFamily: FONTS.Medium,
+    color: COLORS.BLACK,
+    marginTop: RFValue(2),
+    textAlign: 'center',
+  },
+  veryCompactValueText: {
+    fontSize: RFValue(8, height),
+    fontFamily: FONTS.Medium,
+    color: COLORS.BLACK,
+    marginTop: RFValue(1),
+    textAlign: 'center',
+  },
+  compactLabelText: {
+    fontSize: RFValue(10, height),
+    fontFamily: FONTS.Regular,
+    color: COLORS.GRAY_SHADE1,
+    marginTop: RFValue(2),
+    textAlign: 'center',
+  },
+  veryCompactLabelText: {
+    fontSize: RFValue(8, height),
+    fontFamily: FONTS.Regular,
+    color: COLORS.GRAY_SHADE1,
+    marginTop: RFValue(1),
     textAlign: 'center',
   },
 });

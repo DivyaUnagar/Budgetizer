@@ -8,7 +8,7 @@ import {
 import { RFValue } from 'react-native-responsive-fontsize';
 import { COLORS } from '../Utils/Colors';
 import { FONTS } from '../Utils/Fonts';
-import { height } from '../Utils/Constant';
+import { height, width } from '../Utils/Constant';
 import AnimatedBarChart from './AnimatedBarChart';
 import AnimatedPieChart from './AnimatedPieChart';
 import AnimatedLineChart from './AnimatedLineChart';
@@ -53,10 +53,6 @@ const SpendingGraph: React.FC = () => {
     setSelectedPeriod(index);
   };
 
-  const handleChartTypeChange = (index: number) => {
-    setSelectedChartType(index);
-  };
-
   const getTotalSpending = () => {
     return currentData.reduce((sum, item) => sum + item.value, 0);
   };
@@ -65,43 +61,14 @@ const SpendingGraph: React.FC = () => {
     return Math.round(getTotalSpending() / currentData.length);
   };
 
-  const handleCategoryPress = (category: any) => {
-    // Handle category selection - you can add navigation or filtering logic here
-    console.log('Selected category:', category);
-  };
-
   const renderBarChart = () => (
     <Animated.View style={[styles.chartContainer, { opacity: fadeAnim }]}>
       <AnimatedBarChart
         data={currentData}
         barColor={COLORS.THEME}
-        backgroundColor="#F8F9FA"
+        backgroundColor={COLORS.GRAY_SHADE2}
         showValues={true}
         height={200}
-      />
-    </Animated.View>
-  );
-
-  const renderPieChart = () => (
-    <Animated.View style={[styles.chartContainer, { opacity: fadeAnim }]}>
-      <AnimatedPieChart
-        data={categoryData}
-        size={250}
-        strokeWidth={50}
-        onSlicePress={handleCategoryPress}
-      />
-    </Animated.View>
-  );
-
-  const renderLineChart = () => (
-    <Animated.View style={[styles.chartContainer, { opacity: fadeAnim }]}>
-      <AnimatedLineChart
-        data={currentData}
-        height={200}
-        lineColor={COLORS.THEME}
-        fillColor="rgba(61, 176, 199, 0.1)"
-        showGrid={true}
-        showPoints={true}
       />
     </Animated.View>
   );
@@ -114,17 +81,11 @@ const SpendingGraph: React.FC = () => {
           options={periodOptions}
           selectedIndex={selectedPeriod}
           onSelectionChange={handlePeriodChange}
+          containerStyle={{ width: width - RFValue(32) - RFValue(16) }}
         />
       </View>
 
-      {/* Chart Type Selector */}
-      <View style={styles.chartTypeContainer}>
-        <SegmentedControl
-          options={chartTypeOptions}
-          selectedIndex={selectedChartType}
-          onSelectionChange={handleChartTypeChange}
-        />
-      </View>
+     
 
       {/* Spending Summary - Only show for bar chart */}
       {selectedChartType === 0 && (
@@ -142,8 +103,6 @@ const SpendingGraph: React.FC = () => {
 
       {/* Chart Content */}
       {selectedChartType === 0 && renderBarChart()}
-      {selectedChartType === 1 && renderPieChart()}
-      {selectedChartType === 2 && renderLineChart()}
 
       {/* Chart Legend - Only for bar chart */}
       {selectedChartType === 0 && (
@@ -176,6 +135,7 @@ const styles = StyleSheet.create({
   },
   selectorContainer: {
     marginBottom: RFValue(16),
+    marginHorizontal: RFValue(16),
   },
   chartTypeContainer: {
     marginBottom: RFValue(20),

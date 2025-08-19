@@ -6,7 +6,6 @@ import { BottomTabBarProps } from '@react-navigation/bottom-tabs'
 import Home from './AppStack/Home';
 import Graph from './AppStack/Graph';
 import AddTransaction from './AppStack/AddTransaction';
-import { NavigationContainer } from '@react-navigation/native';
 import { SCREENS } from '../common/Utils/ScreenName';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { COLORS } from '../common/Utils/Colors';
@@ -87,25 +86,25 @@ const TabNavigator = () => {
 const Router = () => {
   const insets = useSafeAreaInsets();
   
+  console.log('🏠 Router component rendered');
+  
   return (
-    <NavigationContainer>
-      <View style={styles.container}>
-        <Stack.Navigator
-          screenOptions={{
-            headerShown: false,
-          }}
-        >
-          <Stack.Screen 
-            name="TabNavigator" 
-            component={TabNavigator}
-          />
-          <Stack.Screen 
-            name={SCREENS.ADD_TRANSACTION} 
-            component={AddTransaction}
-          />
-        </Stack.Navigator>
-      </View>
-    </NavigationContainer>
+    <View style={styles.container}>
+      <Stack.Navigator
+        screenOptions={{
+          headerShown: false,
+        }}
+      >
+        <Stack.Screen 
+          name="TabNavigator" 
+          component={TabNavigator}
+        />
+        <Stack.Screen 
+          name={SCREENS.ADD_TRANSACTION} 
+          component={AddTransaction}
+        />
+      </Stack.Navigator>
+    </View>
   )
 }
 
@@ -127,7 +126,13 @@ const styles = StyleSheet.create({
   tabBar: {
     flexDirection: 'row',
     paddingTop: RFValue(15),
-    height: Platform.OS === 'ios' ? height * 0.07 : height * 0.06,
+    height: Platform.OS === 'ios' 
+      ? height * 0.07 
+      : Platform.OS === 'android' && Platform.Version >= 33 
+        ? height * 0.07  // Android 13+ (API 33+)
+        : Platform.OS === 'android' && Platform.Version >= 31 
+          ? height * 0.085 // Android 12 (API 31-32)
+          : height * 0.085, // Android 11 and below
     shadowColor: COLORS.BLACK,
     shadowOffset: {
       width: 0,
@@ -137,7 +142,14 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: 20,
+    paddingHorizontal: RFValue(20),
+    marginBottom: Platform.OS === 'ios' 
+    ? RFValue(5) 
+    : Platform.OS === 'android' && Platform.Version >= 33 
+      ? RFValue(0)  // Android 13+ (API 33+)
+      : Platform.OS === 'android' && Platform.Version >= 31 
+        ? RFValue(10) // Android 12 (API 31-32)
+        : RFValue(10),
   },
   tabItem: {
     flex: 1,

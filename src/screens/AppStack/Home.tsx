@@ -11,6 +11,7 @@ import { STRINGS } from '../../localization/en';
 import { IMAGES } from '../../common/Utils/Images';
 
 const Home = () => {
+    console.log('🏠 Home component rendered');
     const insets = useSafeAreaInsets();
     const progressAnim = useRef(new Animated.Value(0)).current;
 

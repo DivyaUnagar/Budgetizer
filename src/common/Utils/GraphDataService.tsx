@@ -23,13 +23,13 @@ export class GraphDataService {
   
   private spendingData: SpendingData = {
     week: [
-      { label: 'Mon', value: 1250, color: '#3DB0C7' },
+      { label: 'Mon', value: 930, color: '#3DB0C7' },
       { label: 'Tue', value: 450, color: '#3DB0C7' },
       { label: 'Wed', value: 800, color: '#3DB0C7' },
       { label: 'Thu', value: 1100, color: '#3DB0C7' },
       { label: 'Fri', value: 650, color: '#3DB0C7' },
       { label: 'Sat', value: 300, color: '#3DB0C7' },
-      { label: 'Sun', value: 1800, color: '#3DB0C7' },
+      { label: 'Sun', value: 900, color: '#3DB0C7' },
     ],
     month: [
       { label: 'Week 1', value: 4200, color: '#3DB0C7' },

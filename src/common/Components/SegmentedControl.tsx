@@ -1,5 +1,5 @@
 
-import { StyleSheet, Text, View, TouchableOpacity, Animated, Dimensions } from 'react-native'
+import { StyleSheet, Text, View, TouchableOpacity, Animated, Dimensions, StyleProp, ViewStyle } from 'react-native'
 import React, { useState, useRef, useEffect } from 'react'
 import { RFValue } from 'react-native-responsive-fontsize'
 import { COLORS } from '../Utils/Colors'
@@ -10,17 +10,19 @@ interface SegmentedControlProps {
   options: string[]
   selectedIndex?: number
   onSelectionChange?: (index: number) => void
+  containerStyle?: StyleProp<ViewStyle>
 }
 
 const SegmentedControl: React.FC<SegmentedControlProps> = ({ 
   options = ['Expense', 'Income'], 
   selectedIndex = 0, 
-  onSelectionChange 
+  onSelectionChange,
+  containerStyle
 }) => {
   const [selectedTab, setSelectedTab] = useState(selectedIndex)
   const slideAnim = useRef(new Animated.Value(0)).current
   const { width: screenWidth } = Dimensions.get('window')
-  const containerWidth = screenWidth - RFValue(32) // Account for screen margins
+  const containerWidth = screenWidth - RFValue(32) - RFValue(16) // Account for screen margins
   const tabWidth = containerWidth / options.length
 
   useEffect(() => {
@@ -39,7 +41,7 @@ const SegmentedControl: React.FC<SegmentedControlProps> = ({
   }
 
   return (
-    <View style={[styles.container, { width: containerWidth }]}>
+    <View style={[styles.container, { width: containerWidth }, containerStyle]}>
       {/* Animated sliding indicator */}
       <Animated.View 
         style={[
@@ -85,6 +87,7 @@ const styles = StyleSheet.create({
     padding: RFValue(2),
     position: 'relative',
     alignSelf: 'center', // Center the container
+    
   },
   slidingIndicator: {
     position: 'absolute',
